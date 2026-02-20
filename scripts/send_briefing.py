@@ -85,16 +85,20 @@ def send_telegram(message):
 
     if not bot_token or not chat_id:
         print("Missing Telegram credentials")
+        print(f"Bot token: {'***' if bot_token else 'NOT SET'}")
+        print(f"Chat ID: {'***' if chat_id else 'NOT SET'}")
         return False
 
+    print(f"Sending to chat ID: {chat_id}")
     MAX_LENGTH = 4000
     messages = [message[i : i + MAX_LENGTH] for i in range(0, len(message), MAX_LENGTH)]
 
-    for msg in messages:
+    for i, msg in enumerate(messages):
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        data = {"chat_id": chat_id, "text": msg, "parse_mode": "Markdown"}
+        data = {"chat_id": chat_id, "text": msg}
         response = requests.post(url, json=data)
-        print(f"Status: {response.status_code}")
+        print(f"Message {i+1} - Status: {response.status_code}")
+        print(f"Response: {response.text}")
 
     return True
 
