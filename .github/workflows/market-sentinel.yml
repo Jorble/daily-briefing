@@ -1,0 +1,27 @@
+name: Market Sentinel
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTC时间0点 = 北京时间8点
+  workflow_dispatch:
+
+jobs:
+  market-sentinel:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install feedparser requests deep-translator
+
+      - name: Generate and send market sentinel
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/market_sentinel.py
